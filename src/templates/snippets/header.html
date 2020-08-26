@@ -1,0 +1,67 @@
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+
+<style type="text/css">
+    @media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.container {
+  max-width: 960px;
+}
+
+.pricing-header {
+  max-width: 700px;
+}
+
+.card-deck .card {
+  min-width: 220px;
+}
+
+.search-bar{
+  max-width: 500px;
+  width: 100%;
+}
+
+</style>
+
+<div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom shadow-sm">
+  <h5 class="my-0 mr-md-auto font-weight-normal">
+    {%if request.user.is_authenticated%}
+    Hello, {{request.user.username}}
+    {%endif%}
+  </h5>
+
+  <div class="search-bar mt-sm-2 mr-2">
+    <form method="GET">
+      <input type="text" class="form-control" name="q" id="id_q" placeholder="Search...">
+    </form>
+  </div>
+
+
+
+
+  <nav class="my-2 my-md-0 mr-md-3">
+    {%if request.user.is_authenticated%}
+        <p>
+            <a class="p-2 text-dark" href="{%url 'personal:home'%}">HOME </a>
+            <a class="p-2 text-dark" href="{%url 'account:logout'%}">Logout </a>
+            <a class="p-2 text-dark" href="{%url 'account:profile'%}">Account</a>
+
+        </p>
+    {%else%}
+        <p>
+            <a class="p-2 text-dark" href="{%url 'personal:home'%}">HOME </a>
+            <a class="p-2 text-dark" href="{%url 'account:login'%}">Login </a>
+            <a class="btn btn-outline-primary"  href="{%url 'account:register'%}"> Register</a>
+        </p>
+    {%endif%}
+
+  </nav>
+</div>
+
+
+<script type="text/javascript">
+  document.getElementById("id_q").value="{{query}}"
+</script>

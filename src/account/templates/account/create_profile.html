@@ -1,0 +1,96 @@
+{%extends 'base.html'%}
+
+{%block content%}
+<style type="text/css">
+    .form-signin {
+      width: 100%;
+      max-width: 330px;
+      padding: 15px;
+      margin: auto;
+    }
+
+    .form-signin .form-control {
+      position: relative;
+      box-sizing: border-box;
+      height: auto;
+      padding: 10px;
+      font-size: 16px;
+    }
+    .form-signin .form-control:focus {
+      z-index: 2;
+    }
+    .form-signin input[type="email"] {
+      margin-bottom: -1px;
+      border-bottom-right-radius: 0;
+      border-bottom-left-radius: 0;
+    }
+    .form-signin input[type="username"] {
+      margin-bottom: 10px;
+      border-top-left-radius: 0;
+      border-top-right-radius: 0;
+    }
+    .h3{
+        text-align: center;
+    }
+    .blog_posts{
+      max-width: 500px;
+      width: 100%;
+      margin: auto;
+    }
+
+</style>
+
+<form class="form-signin" method="post">{%csrf_token%}
+
+    <h1 class="h3 mb-3 font-weight-normal">Profile</h1>
+
+    <!-- Name -->
+    <div class="form-group">
+        <label for="id_name">Name : </label>
+        <input type="text" name="name" id="id_name" class="form-control" placeholder="Name" required>
+    </div>
+
+
+    <br>
+
+    <!-- Hall -->
+    <div class="form-group">
+        <label for="id_hall">Hall No:</label>
+        <select class="form-control" name="hall" id="id_hall" required>
+            {%for hall in HALLS%}
+                <option value="{{hall.0}}"  {%if not hall.0 %}selected disabled hidden{%endif%}>{{hall.1}}</option>
+            {%endfor%}
+        </select>
+    </div>
+
+    <br>
+
+    <!-- Veg -->
+    <label for="id_veg">Veg: </label>
+    <input type="checkbox" name="veg" id="id_veg"  value="1">
+    <br>
+
+    <p>{%for field in form%}
+
+        {%for error in field.errors%}
+            <p style="color: red;">{{error}}</p>
+        {%endfor%}
+    </p>
+    {%endfor%}
+
+    {%if form.non_field_errors%}
+        <div style="color: red;">
+            <p>{{form.non_field_errors}}</p>
+        </div>
+    {%endif%}
+
+    {%if success_message%}
+        <p style="color: green;text-align: center;">{{success_message}}</p>
+    {%endif%}
+
+
+    <button class="btn btn-lg btn-primary btn-block" type="submit">Save Changes</button>
+
+</form>
+
+{%endblock content%}

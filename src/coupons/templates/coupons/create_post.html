@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+
+
+
+{% block content %}
+
+<style type="text/css">
+  .create-form {
+        width: 100%;
+        max-width: 100%;
+        padding: 15px;
+        margin: auto;
+    }
+
+    .submit-button{
+        max-width: 200px;
+    }
+</style>
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-7 offset-lg-1">
+            <form class="create-form" method="post" enctype="multipart/form-data">{% csrf_token %}
+
+                <!-- Meal -->
+                <div class="form-group">
+                    <label for="id_meal">Meal:</label>
+                    <select class="form-control" name="meal" id="id_meal" required>
+                        {%for meal in MEALS%}
+                            <option value="{{meal.0}}"  {%if not meal.0.strip %} selected disabled hidden{%endif%}>{{meal.1}}</option>
+                        {%endfor%}
+                    </select>
+                </div>
+
+                <!-- Hall -->
+                <div class="form-group">
+                    <label for="id_hall">Hall No:</label>
+                    <select class="form-control" name="hall" id="id_hall" required>
+                        {%for hall in HALLS%}
+                            <option value="{{hall.0}}"  {%if not hall.0 %}selected disabled hidden{%endif%}>{{hall.1}}</option>
+                        {%endfor%}
+                    </select>
+                </div>
+
+                <!-- Price -->
+                <div class="form-group">
+                    <label for="id_price">Price: Rs.</label>
+                    <input class="form-control" type="number" name="price" id="id_price" placeholder="Price" required autofocus>
+                </div>
+                
+                <p>{%for field in form%}
+                        {%for error in field.errors%}
+                            <p style="color: red;">{{error}}</p>
+                        {%endfor%}
+                
+                
+                    </p>
+                    {%endfor%}
+                
+                    {%if form.non_field_errors%}
+                        <div style="color: red;">
+                            <p>{{form.non_field_errors}}</p>
+                        </div>
+                    {%endif%}
+
+                <!-- Submit btn -->
+                <button class="submit-button btn btn-lg btn-primary btn-block" type="submit">POST</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock content %}

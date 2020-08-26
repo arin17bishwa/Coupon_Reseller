@@ -1,0 +1,221 @@
+{%extends 'base.html'%}
+{%load static%}
+{%block content%}
+
+
+<style type="text/css">
+    .form-signin {
+      width: 100%;
+      max-width: 330px;
+      padding: 15px;
+      margin: auto;
+    }
+
+    .form-signin .form-control {
+      position: relative;
+      box-sizing: border-box;
+      height: auto;
+      padding: 10px;
+      font-size: 16px;
+    }
+    .form-signin .form-control:focus {
+      z-index: 2;
+    }
+    .form-signin input[type="email"] {
+      margin-bottom: -1px;
+      border-bottom-right-radius: 0;
+      border-bottom-left-radius: 0;
+    }
+    .form-signin input[type="username"] {
+      margin-bottom: 10px;
+      border-top-left-radius: 0;
+      border-top-right-radius: 0;
+    }
+    .h3{
+        text-align: center;
+    }
+    .blog_posts{
+      max-width: 500px;
+      width: 100%;
+      margin: auto;
+    }
+
+</style>
+
+<form class="form-signin" method="post">{%csrf_token%}
+
+    <h1 class="h3 mb-3 font-weight-normal">Account</h1>
+
+    <input type="text" name="username" id="inputUsername" class="form-control" placeholder="Username" required
+    value="{{account_form.initial.username}}">
+
+
+    <p>{%for field in account_form%}
+
+        {%for error in field.errors%}
+            <p style="color: red;">{{error}}</p>
+        {%endfor%}
+
+    </p>
+
+    {%endfor%}
+
+    {%if account_form.non_field_errors%}
+        <div style="color: red;">
+            <p>{{account_form.non_field_errors}}</p>
+        </div>
+    {%endif%}
+
+    {%if success_message%}
+        <p style="color: green;text-align: center;">{{success_message}}</p>
+    {%endif%}
+
+
+    <button class="btn btn-lg btn-primary btn-block" type="submit">Save Changes</button>
+
+</form>
+
+<div class="d-flex flex-column">
+  <a class="m-auto" href="{%url 'account:profileData_view' slug=request.user.userprofile.slug %}">Edit Profile</a>
+</div>
+
+<div class="d-flex flex-column">
+  <a class="m-auto" href="{%url 'password_change'%}">Change Password</a>
+</div>
+<hr>
+<style type="text/css">
+
+    @media (max-width: 768px) {
+        .right-column{
+            margin-left: 0px;
+        }
+    }
+
+    @media (min-width: 768px) {
+        .right-column{
+            margin-left: 20px;
+        }
+    }
+
+    .blog-post-container{
+        margin-bottom: 20px;
+        width: 100%;
+    }
+    .create-post-bar{
+        background-color: #fff;
+        margin-bottom:20px;
+    }
+
+    .left-column{
+        padding:0px;
+    }
+
+    .right-column{
+        padding:0px;
+    }
+    .lead{
+        font-size: 17px;
+    }
+</style>
+<div class="container">
+    <div class="row">
+
+        <!-- Ad feed -->
+        <div class="left-column col-lg-7 offset-lg-1">
+
+            <!-- Top 'create post' bar -->
+            <div class="d-lg-none mb-3">
+                <div class="card m-auto d-flex flex-column p-3">
+                    <img class="img-fluid d-block m-auto pb-2" src="{% static 'reno-laithienne-DsquaRPU_tA-unsplash.jpg' %}" width="72" height="72">
+                    <p class="lead">Wanna sell your meal coupon? Just Post an Ad...</p>
+                    <p class="m-auto"><a class="btn btn-primary" href="{% url 'coupons:create'%}">Create post</a></p>
+                </div>
+            </div>
+            <!-- end Top 'create post' bar -->
+
+            <!-- Coupon posts-->
+            {%if coupon_posts%}
+                {% for post in coupon_posts %}
+                    <div class="blog-post-container">
+                        {% include 'coupons/snippets/coupon_snippet.html' with coupon_post=post %}
+                    </div>
+                {% endfor %}
+            {%else%}
+                <div class="blog-post-container">
+                    {% include 'coupons/snippets/coupon_snippet.html' with query=query %}
+                </div>
+            {%endif%}
+            <!-- End Blog posts-->
+            <!--Pagination  TO DO-->
+
+        </div>
+        <!-- end blog feed -->
+
+
+        <!-- Right 'create post' column  -->
+        <div class="right-column col-lg-3 d-lg-flex d-none flex-column">
+
+            <div class="card create-post-bar d-flex flex-column p-3">
+                <img class="img-fluid d-block m-auto pb-2" src="{% static 'reno-laithienne-DsquaRPU_tA-unsplash.jpg' %}" width="72" height="72">
+                    <p class="lead">Wanna sell your meal coupon? Just Post an Ad...</p>
+                    <p class="m-auto"><a class="btn btn-primary" href="{% url 'coupons:create' %}">Create post</a></p>
+            </div>
+
+        </div>
+        <!-- end Right 'create post' column  -->
+
+    </div>
+</div>
+
+
+
+<script>
+
+    const STATES=['Sold','Not Sold']
+
+    function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+          const cookies = document.cookie.split(';');
+          for (let i = 0; i < cookies.length; i++) {
+              const cookie = cookies[i].trim();
+              // Does this cookie string begin with the name we want?
+              if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                  cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                  break;
+              }
+          }
+      }
+      return cookieValue;
+    }
+
+
+    function handleDidAct(slug,action){
+        const buttonContainer=document.getElementById('sold-'+slug)
+        if (action=='yes'){
+            buttonContainer.innerHTML=''
+        }
+        const csrftoken = getCookie('csrftoken');
+        let url='{%url "coupons:actions"%}'
+        const method='POST'
+        const data=JSON.stringify({
+            slug:slug,
+            action:action
+        })
+        //console.log(data)
+        const xhr=new XMLHttpRequest()
+        xhr.open(method,url)
+        xhr.setRequestHeader("Content-Type","application/json")
+        xhr.setRequestHeader("HTTP_X_REQUESTED_WITH","XMLHttpRequest")
+        xhr.setRequestHeader("X-Requested-With","XMLHttpRequest")
+        xhr.setRequestHeader("X-CSRFToken",csrftoken)
+
+        xhr.send(data)
+        return;
+        //console.log(buttonContainer.innerHTML,action,slug)
+    }
+
+</script>
+
+
+{%endblock content%}

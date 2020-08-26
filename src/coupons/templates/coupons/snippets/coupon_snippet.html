@@ -1,0 +1,60 @@
+<style type="text/css">
+    .card{
+        max-width: 700px;
+        width: 100%;
+    }
+    .card-body{
+        padding: 20px;
+        width: 100%;
+    }
+</style>
+
+{%if coupon_post%}
+<div class="container">
+    <div class="row">
+
+        <!-- Blog Post -->
+        <div class="card m-auto">
+
+            <div class="card-body mt-2 mb-2">
+                {%if coupon_post.author == request.user%}<a href="{% url 'coupons:update' slug=coupon_post.slug %}">{%endif%}
+
+                    <h2 class="card-title">{{coupon_post.get_meal_name}} At Hall-{{coupon_post.hall}} for Rs.{{coupon_post.price}}</h2>
+                {%if coupon_post.author == request.user%}</a>{%endif%}
+                <div id="sold-{{coupon_post.slug}}">
+                    {%if coupon_post.author == request.user and not coupon_post.sold%}
+                    <label >Sold Yet? :</label>
+                    <button id="sold-{{coupon_post.slug}}-yes" onclick="handleDidAct('{{coupon_post.slug}}','yes')" class="btn btn-primary"> YES</button>
+                    {%endif%}
+                </div>
+
+
+            </div>
+            <div class="card-footer text-muted">
+                Updated on {{coupon_post.date_updated}} by
+                <a href="{%url 'account:profileData_view' slug=coupon_post.author.registration_no %}">
+                    {{coupon_post.author.userprofile.name}}
+                </a>
+                ({{coupon_post.author.registration_no}})
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+{%else%}
+<div class="container">
+    <div class="row">
+        <div class="card m-auto">
+            <div class="card-body mt-2 mb-2">
+                <h2 class="card-title">
+                    No Results
+                </h2>
+                <p class="card-text">There were no posts matching your search.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{%endif%}
+
