@@ -41,6 +41,3 @@ def welcome_view(request):
     context = {}
     context['message'] = 'WELCOME EVERYONE'
     return render(request, 'personal/home.html', context=context)
-
-def homeView(request):
-    pass
