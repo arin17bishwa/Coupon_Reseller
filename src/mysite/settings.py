@@ -26,7 +26,7 @@ SECRET_KEY =os.environ.get("DJ_SECRET_KEY_COUPON_RESELLER") #'t&m(g+s#haha)h@0u8
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['arin17.pythonanywhere.com']
+ALLOWED_HOSTS = ['arin17.pythonanywhere.com','127.0.0.1']
 
 AUTH_USER_MODEL='account.User'
 
