@@ -26,13 +26,7 @@ from .utils import account_activation_token
 HALLS=settings.HALLS
 User=get_user_model()
 
-'''            form.save()
-            username=form.cleaned_data.get('username')
-            raw_password=form.cleaned_data.get('password1')
-            account=authenticate(username=username,password=raw_password)
-            #login(request,account)
-            return HttpResponse('YOUR ACCOUNT HAS BEEN CREATED BUT NOT ACTIVE YET.')
-            #return redirect('personal:home')'''
+
 # Create your views here.
 
 def registration_view(request):
@@ -101,7 +95,6 @@ def login_view(request):
             user=authenticate(username=username,password=password)
 
             if user:
-                #print('IS ACTIVE '.format({user.is_active,user.email,user}))
                 if not user.is_active:return HttpResponse('YOUR ACCOUNT IS NOT ACTIVE YET')
                 login(request,user)
                 return redirect('personal:home')
@@ -159,7 +152,6 @@ def profile_view(request,slug):
     if request.POST:
         form=ProfileUpdateForm(request.POST or None,instance=request.user.userprofile)
         if form.is_valid():
-            #print(request.POST.get('veg',0),request.POST['name'],request.POST['hall'])
             obj=form.save(commit=False)
             obj.hall=int(request.POST.get('hall'))
             obj.save()
