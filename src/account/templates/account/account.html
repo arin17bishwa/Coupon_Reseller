@@ -82,7 +82,9 @@
 <div class="d-flex flex-column">
   <a class="m-auto" href="{%url 'password_change'%}">Change Password</a>
 </div>
+
 <hr>
+
 <style type="text/css">
 
     @media (max-width: 768px) {
@@ -117,6 +119,7 @@
         font-size: 17px;
     }
 </style>
+
 <div class="container">
     <div class="row">
 
@@ -126,9 +129,7 @@
             <!-- Top 'create post' bar -->
             <div class="d-lg-none mb-3">
                 <div class="card m-auto d-flex flex-column p-3">
-                    <img class="img-fluid d-block m-auto pb-2" src="{% static 'reno-laithienne-DsquaRPU_tA-unsplash.jpg' %}" width="72" height="72">
-                    <p class="lead">Wanna sell your meal coupon? Just Post an Ad...</p>
-                    <p class="m-auto"><a class="btn btn-primary" href="{% url 'coupons:create'%}">Create post</a></p>
+                    <p class="m-auto"><a class="btn btn-primary" href="{% url 'coupons:create'%}">Post Ad</a></p>
                 </div>
             </div>
             <!-- end Top 'create post' bar -->
@@ -156,9 +157,7 @@
         <div class="right-column col-lg-3 d-lg-flex d-none flex-column">
 
             <div class="card create-post-bar d-flex flex-column p-3">
-                <img class="img-fluid d-block m-auto pb-2" src="{% static 'reno-laithienne-DsquaRPU_tA-unsplash.jpg' %}" width="72" height="72">
-                    <p class="lead">Wanna sell your meal coupon? Just Post an Ad...</p>
-                    <p class="m-auto"><a class="btn btn-primary" href="{% url 'coupons:create' %}">Create post</a></p>
+                    <p class="m-auto"><a class="btn btn-primary" href="{% url 'coupons:create' %}">Post Ad</a></p>
             </div>
 
         </div>

@@ -2,6 +2,11 @@
 {% load static %}
 
 {% block content %}
+{%if 'hall' in request.GET%}
+    {%with hall=request.GET.hall%}
+    {%endwith%}
+{%endif%}
+
 <style type="text/css">
 
     @media (max-width: 768px) {
@@ -45,10 +50,52 @@
             <!-- Top 'create post' bar -->
             <div class="d-lg-none mb-3">
                 <div class="card m-auto d-flex flex-column p-3">
-                    <img class="img-fluid d-block m-auto pb-2" src="{% static 'reno-laithienne-DsquaRPU_tA-unsplash.jpg' %}" width="72" height="72">
-                    <p class="lead">Wanna sell your meal coupon? Just Post an Ad...</p>
-                    <p class="m-auto"><a class="btn btn-primary" href="{% url 'coupons:create'%}">Create post</a></p>
+                    <p class="m-auto"><a class="btn btn-primary" href="{% url 'coupons:create'%}">Post an Ad</a></p>
+                    <hr>
+                    <form method="GET">
+
+                    <div class="form-group">
+                        <select class="form-control" name="hall" id="id_hall_top" required>
+                            {%for hall in HALLS%}
+                                <option value="{{hall.0}}"{%if 'hall' in request.GET %}
+                                                            {%if hall.1 == request.GET.hall or request.GET.hall == 'None' %} selected{%endif%}
+                                                          {%else%}  {%if not hall.0 %}selected  {%endif%}{%endif%}>
+                                    {%if not hall.0 %}
+                                        All Halls
+                                    {%else%}
+                                        {{hall.1}}
+                                    {%endif%}
+                                </option>
+                            {%endfor%}
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <select class="form-control" name="meal" id="id_meal_top" required>
+                            {%for meal in MEALS%}
+                                <option value="{{meal.0}}" {%if 'meal' in request.GET %}
+                                                            {%if meal.0 == request.GET.meal or request.GET.meal == 'None' %} selected{%endif%}
+                                                          {%else%}  {%if not meal.0 %}selected  {%endif%}{%endif%}>
+                                    {%if not meal.0 %}
+                                        All meals
+                                    {%else%}
+                                        {{meal.1}}
+                                    {%endif%}
+                                </option>
+                            {%endfor%}
+                        </select>
+                    </div>
+
+                <!-- Submit btn -->
+                <button class="submit-button btn btn-lg btn-primary btn-block" type="submit">Filter</button>
+
+                </form>
+
                 </div>
+
+
+
+
             </div>
             <!-- end Top 'create post' bar -->
 
@@ -65,7 +112,8 @@
                 </div>
             {%endif%}
             <!-- End Blog posts-->
-            <!--Pagination  TO DO-->
+            <!--Pagination-->
+            {%include 'coupons/snippets/pagination_snippet.html' with posts=coupon_posts  %}
 
         </div>
         <!-- end blog feed -->
@@ -75,10 +123,47 @@
         <div class="right-column col-lg-3 d-lg-flex d-none flex-column">
 
             <div class="card create-post-bar d-flex flex-column p-3">
-                <img class="img-fluid d-block m-auto pb-2" src="{% static 'reno-laithienne-DsquaRPU_tA-unsplash.jpg' %}" width="72" height="72">
-                    <p class="lead">Wanna sell your meal coupon? Just Post an Ad...</p>
-                    <p class="m-auto"><a class="btn btn-primary" href="{% url 'coupons:create' %}">Create post</a></p>
+                <p class="m-auto"><a class="btn btn-primary" href="{% url 'coupons:create' %}">Post Ad</a></p>
             </div>
+
+            <form method="GET">
+
+                <div class="form-group">
+                    <select class="form-control" name="hall" id="id_hall_side" required>
+                        {%for hall in HALLS%}
+                            <option value="{{hall.0}}"{%if 'hall' in request.GET %}
+                                                            {%if hall.1 == request.GET.hall or request.GET.hall == 'None'  %} selected{%endif%}
+                                                      {%else%}  {%if not hall.0 %}selected  {%endif%}{%endif%}>
+                                {%if not hall.0 %}
+                                    All Halls
+                                {%else%}
+                                    {{hall.1}}
+                                {%endif%}
+                        {%endfor%}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <select class="form-control" name="meal" id="id_meal_side" required>
+                        {%for meal in MEALS%}
+                            <option value="{{meal.0}}"  {%if 'meal' in request.GET %}
+                                                            {%if meal.0 == request.GET.meal or request.GET.meal == 'None' %} selected{%endif%}
+                                                          {%else%}  {%if not meal.0 %}selected  {%endif%}{%endif%}>
+                                {%if not meal.0 %}
+                                    All meals
+                                {%else%}
+                                    {{meal.1}}
+                                {%endif%}
+                            </option>
+                        {%endfor%}
+                    </select>
+                </div>
+
+
+                <!-- Submit btn -->
+                <button class="submit-button btn btn-lg btn-primary btn-block" type="submit">Filter</button>
+
+            </form>
 
         </div>
         <!-- end Right 'create post' column  -->

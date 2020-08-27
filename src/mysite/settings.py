@@ -65,6 +65,10 @@ TEMPLATES = [
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
+                #my context_processors
+                'personal.processors.hallnmeal',
+
+                #pre-installed
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
@@ -129,6 +133,8 @@ HALLS=(
     (13, '13'),
     (None,'Hall Number')
 )
+POSTS_PER_PAGE=15
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/

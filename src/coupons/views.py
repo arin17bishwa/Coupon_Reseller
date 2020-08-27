@@ -29,8 +29,8 @@ def create_coupon_view(request):
         obj.save()
         form=CreateCouponForm()
     context['form']=form
-    context['MEALS']=settings.MEALS
-    context['HALLS']=settings.HALLS
+    #context['MEALS']=settings.MEALS
+    #context['HALLS']=settings.HALLS
     return render(request,'coupons/create_post.html',context)
 
 
