@@ -22,7 +22,7 @@ from .models import User, UserProfile
 from .utils import account_activation_token
 
 
-import sqlite3
+import sqlite3,os
 
 # Create your views here.
 
@@ -49,7 +49,6 @@ def registration_view(request):
                 name_verified = True
             else:
                 name_verified = False
-            #print(name, name_verified)
             user.name_verified=name_verified
             user.save()
 
@@ -170,7 +169,7 @@ def profile_view(request,slug):
             obj.hall=int(request.POST.get('hall'))
 
             if user.name_verified:
-                conn = sqlite3.connect('account/bt_all.sqlite3')
+                conn = sqlite3.connect(os.path.join(settings.BASE_DIR,'account/bt_all.sqlite3'))
                 cur = conn.cursor()
                 cur.execute('SELECT name FROM BTECH_all WHERE reg= ? ', (user.registration_no.upper(),))
                 name = cur.fetchone()[0]
@@ -215,7 +214,7 @@ def create_profile_view(request,slug):
             owner=User.objects.filter(registration_no=user.registration_no.upper()).first()
             profile.user=owner
             if user.name_verified:
-                conn = sqlite3.connect('account/bt_all.sqlite3')
+                conn = sqlite3.connect(os.path.join(settings.BASE_DIR,'account/bt_all.sqlite3'))
                 cur = conn.cursor()
                 cur.execute('SELECT name FROM BTECH_all WHERE reg= ? ', (user.registration_no.upper(),))
                 name = cur.fetchone()[0]
