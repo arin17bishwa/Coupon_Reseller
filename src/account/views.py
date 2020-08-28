@@ -48,7 +48,7 @@ def registration_view(request):
                 name_verified = True
             else:
                 name_verified = False
-            print(name, name_verified)
+            #print(name, name_verified)
             user.name_verified=name_verified
             user.save()
 
@@ -64,7 +64,7 @@ def registration_view(request):
             email = EmailMessage(
                 mail_subject, message, to=[to_email]
             )
-            #email.send()
+            email.send()
             print(message)
             return HttpResponse('Please confirm your email address to complete the registration')
 

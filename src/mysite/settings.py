@@ -133,7 +133,7 @@ HALLS=(
     (13, '13'),
     (None,'Hall Number')
 )
-POSTS_PER_PAGE=15
+POSTS_PER_PAGE=10
 
 
 # Internationalization

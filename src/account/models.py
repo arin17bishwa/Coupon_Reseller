@@ -67,7 +67,6 @@ class User(AbstractBaseUser):
     is_staff                = models.BooleanField(default=False)
     is_superuser            = models.BooleanField(default=False)
     name_verified           = models.BooleanField(default=False)
-    #profile                 = models.ForeignKey('UserProfile',on_delete=models.CASCADE,related_name='User_Profile')
 
     USERNAME_FIELD='username'
     REQUIRED_FIELDS = ['email','registration_no']
@@ -88,7 +87,6 @@ class UserProfile(models.Model):
     hall                =models.PositiveSmallIntegerField(choices=HALLS)
     veg                 =models.BooleanField(default=False)
     slug                =models.SlugField(blank=True,unique=True)
-    #name_verified       =models.BooleanField(default=False)
 
     def __str__(self):
         return "Userame:{}\nName:{}\nHall:{}\nSlug:{}".format(self.user.username,self.name,self.hall,self.slug)

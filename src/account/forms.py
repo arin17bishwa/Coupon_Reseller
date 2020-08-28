@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth import authenticate
 from django.contrib.auth.forms import UserCreationForm
-
+from django.core.exceptions import ValidationError
 from .models import User, UserProfile
 
 
@@ -20,13 +20,25 @@ class RegistrationForm(UserCreationForm):
         email = self.cleaned_data['email'].lower().strip()
         if email.count('@')==1:
             address,domain=email.split('@')
-            #print('here is it:', address, domain)
             if '.' not in domain:
                 self.add_error('email', 'Please use a valid email address')
         else:
             self.add_error('email','Please use a valid email address')
+
+        if not str(email).endswith('.nitdgp.ac.in'):
+            self.add_error('email','Please use institute email ID.It should end with ".nitdgp.ac.in"')
+
+
         #print(email)
         return email
+
+    def clean(self):
+        super().clean()
+        reg=self.cleaned_data.get('registration_no')
+        email=self.cleaned_data.get('email')
+        if reg and email:
+            if str(reg).lower() not in str(email):
+                raise ValidationError('Registration no. must be present in the email!')
 
 class AccountAuthenticationForm(forms.ModelForm):
     password=forms.CharField(label='Password',widget=forms.PasswordInput)

@@ -7,6 +7,8 @@
         padding: 20px;
         width: 100%;
     }
+
+
 </style>
 
 {%if coupon_post%}
@@ -32,7 +34,12 @@
             </div>
             <div class="card-footer text-muted">
                 Updated on {{coupon_post.date_updated}} by
-                <a href="{%url 'account:profileData_view' slug=coupon_post.author.registration_no %}">
+                <a href="{%url 'account:profileData_view' slug=coupon_post.author.registration_no %}" style=
+                    {%if coupon_post.author.name_verified%}
+                        "color: #7cfc00"
+                    {%else%}
+                        "color: #ff0000"
+                    {%endif%}>
                     {{coupon_post.author.userprofile.name}}
                 </a>
                 ({{coupon_post.author.registration_no}})
