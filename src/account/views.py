@@ -71,8 +71,7 @@ def activate(request, uidb64, token):
         user.is_active = True
         user.save()
         login(request, user)
-        # return redirect('personal:home')
-        return  redirect('account:create_profile',slug=str(user.registration_no))
+        return redirect('account:create_profile',slug=str(user.registration_no))
     else:
         return HttpResponse('Activation link is invalid!')
 

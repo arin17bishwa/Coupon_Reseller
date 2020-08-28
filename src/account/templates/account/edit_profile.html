@@ -86,4 +86,13 @@
 
 </form>
 
+
+<script>
+nameField=document.getElementById('inputName')
+
+nameField.addEventListener( "input", event => {
+ nameField.value = nameField.value.replace( /[^a-zA-Z ]/gm, '');
+}, false);
+</script>
+
 {%endblock content%}
