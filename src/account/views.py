@@ -40,7 +40,7 @@ def registration_view(request):
             user = form.save(commit=False)
             user.is_active = False
             user.registration_no=str(user.registration_no).upper()
-            conn = sqlite3.connect('account/bt_all.sqlite3')
+            conn = sqlite3.connect(os.path.join(settings.BASE_DIR,'account/bt_all.sqlite3'))
             cur = conn.cursor()
             cur.execute('SELECT name FROM BTECH_all WHERE reg= ? ', (user.registration_no.upper(),))
             name = cur.fetchone()
