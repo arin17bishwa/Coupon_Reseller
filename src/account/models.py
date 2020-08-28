@@ -20,7 +20,7 @@ class MyAccountManager(BaseUserManager):
         user=self.model(
             email=self.normalize_email(email),
             username=username,
-            registration_no=registration_no
+            registration_no=registration_no.upper()
         )
         user.set_password(password)
         user.save(using=self._db)
@@ -31,7 +31,7 @@ class MyAccountManager(BaseUserManager):
             email=self.normalize_email(email),
             password=password,
             username=username,
-            registration_no=registration_no
+            registration_no=registration_no.upper()
         )
 
         user.is_admin=False
@@ -45,7 +45,7 @@ class MyAccountManager(BaseUserManager):
             email=self.normalize_email(email),
             password=password,
             username=username,
-            registration_no=registration_no,
+            registration_no=registration_no.upper(),
         )
 
         user.is_admin=True
@@ -96,6 +96,6 @@ class UserProfile(models.Model):
 
 def pre_save_userprofile(sender,instance,*args,**kwargs):
     if not instance.slug:
-        instance.slug=slugify(instance.user.registration_no)#+'-'+datetime.datetime.now().strftime("%H%M%S%f"))
+        instance.slug=slugify(instance.user.registration_no).lower()#+'-'+datetime.datetime.now().strftime("%H%M%S%f"))
 
 pre_save.connect(pre_save_userprofile,sender=UserProfile)

@@ -39,6 +39,7 @@ def registration_view(request):
         if form.is_valid():
             user = form.save(commit=False)
             user.is_active = False
+            user.registration_no=str(user.registration_no).upper()
             conn = sqlite3.connect('account/bt_all.sqlite3')
             cur = conn.cursor()
             cur.execute('SELECT name FROM BTECH_all WHERE reg= ? ', (user.registration_no.upper(),))
@@ -64,7 +65,7 @@ def registration_view(request):
             email = EmailMessage(
                 mail_subject, message, to=[to_email]
             )
-            email.send()
+            #email.send()
             print(message)
             return HttpResponse('Please confirm your email address to complete the registration')
 
@@ -86,7 +87,7 @@ def activate(request, uidb64, token):
         user.is_active = True
         user.save()
         login(request, user)
-        return redirect('account:create_profile',slug=str(user.registration_no))
+        return redirect('account:create_profile',slug=str(user.registration_no).lower())
     else:
         return HttpResponse('Activation link is invalid!')
 
@@ -155,9 +156,9 @@ def profile_view(request,slug):
         return redirect('account:must_authenticate')
 
     if (not hasattr(user,'userprofile')) or str(user.userprofile.name).strip()=='':
-        return redirect('account:create_profile',slug=str(user.registration_no))
+        return redirect('account:create_profile',slug=str(user.registration_no.lower()))
 
-    profile=get_object_or_404(UserProfile,slug=slug)
+    profile=get_object_or_404(UserProfile,slug=slug.lower())
     context['profile'] = profile
     if profile.user!=user:
         return render(request,'account/view_profile.html',context)
@@ -197,10 +198,10 @@ def create_profile_view(request,slug):
     user=request.user
     if (not request.user.is_authenticated):
         return redirect('account:must_authenticate')
-    if user.registration_no!=slug:
+    if user.registration_no.lower()!=slug:
         return redirect('account:must_authenticate')
 
-    account=get_object_or_404(User,registration_no=slug)
+    account=get_object_or_404(User,registration_no=slug.upper())#######
 
     if not account:return HttpResponse('Sorry, But no such account was found.....\nAnd please stop messing around with the system....')
     #context['HALLS']=HALLS
@@ -211,7 +212,7 @@ def create_profile_view(request,slug):
         if form.is_valid():
             profile=form.save(commit=False)
             profile.hall=int(request.POST.get('hall'))
-            owner=User.objects.filter(registration_no=user.registration_no).first()
+            owner=User.objects.filter(registration_no=user.registration_no.upper()).first()
             profile.user=owner
             if user.name_verified:
                 conn = sqlite3.connect('account/bt_all.sqlite3')

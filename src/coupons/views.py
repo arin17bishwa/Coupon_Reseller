@@ -18,8 +18,7 @@ def create_coupon_view(request):
         return redirect('account:must_authenticate')
 
     if (not hasattr(user,'userprofile')) or user.userprofile.name=='':
-        return redirect('account:create_profile',slug=str(user.registration_no))
-        #return HttpResponse('You must COMPLETE YOUR profile to post ads!')
+        return redirect('account:create_profile',slug=str(user.registration_no).lower())
 
     form=CreateCouponForm(request.POST or None)
     if form.is_valid():
@@ -29,8 +28,6 @@ def create_coupon_view(request):
         obj.save()
         form=CreateCouponForm()
     context['form']=form
-    #context['MEALS']=settings.MEALS
-    #context['HALLS']=settings.HALLS
     return render(request,'coupons/create_post.html',context)
 
 
@@ -43,9 +40,7 @@ def update_coupon_view(request,slug):
     post=get_object_or_404(Coupon,slug=slug)
     if post.author!=user: return redirect('account:must_authenticate')
     if request.POST:
-        #request.POST['sold']=int(request.POST['sold'])
         form=UpdateCouponForm(request.POST or None,instance=post)
-        #print(type(request.POST.get('sold')),request.POST['sold'])
         if form.is_valid():
             obj=form.save(commit=False)
             obj.sold=int(request.POST['sold'])
