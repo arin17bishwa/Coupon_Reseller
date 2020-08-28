@@ -45,7 +45,12 @@
     <h1 class="h3 mb-3 font-weight-normal">Profile</h1>
 
     <!-- Name -->
-    <input type="text" name="name" id="inputName" class="form-control" placeholder="Name" required
+    <input type="text" name="name" id="inputName" class="form-control" placeholder="Name"
+           {%if request.user.name_verified%}
+           readonly
+           {%else%}
+           required
+           {%endif%}
     value="{{profile_form.initial.name}}">
     <br>
     <!-- Hall -->

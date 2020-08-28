@@ -21,6 +21,9 @@ from .forms import (
 from .models import User, UserProfile
 from .utils import account_activation_token
 
+
+import sqlite3
+
 # Create your views here.
 
 HALLS=settings.HALLS
@@ -36,7 +39,19 @@ def registration_view(request):
         if form.is_valid():
             user = form.save(commit=False)
             user.is_active = False
+            conn = sqlite3.connect('account/bt_all.sqlite3')
+            cur = conn.cursor()
+            cur.execute('SELECT name FROM BTECH_all WHERE reg= ? ', (user.registration_no.upper(),))
+            name = cur.fetchone()
+            if name is not None:
+                name = name[0]
+                name_verified = True
+            else:
+                name_verified = False
+            print(name, name_verified)
+            user.name_verified=name_verified
             user.save()
+
             current_site = get_current_site(request)
             mail_subject = 'Activate your Coupon_Reseller account.'
             message = render_to_string('account/acc_active_email.html', {
@@ -49,7 +64,7 @@ def registration_view(request):
             email = EmailMessage(
                 mail_subject, message, to=[to_email]
             )
-            email.send()
+            #email.send()
             print(message)
             return HttpResponse('Please confirm your email address to complete the registration')
 
@@ -144,7 +159,6 @@ def profile_view(request,slug):
 
     profile=get_object_or_404(UserProfile,slug=slug)
     context['profile'] = profile
-    context['HALLS']=HALLS
     if profile.user!=user:
         return render(request,'account/view_profile.html',context)
 
@@ -153,6 +167,14 @@ def profile_view(request,slug):
         if form.is_valid():
             obj=form.save(commit=False)
             obj.hall=int(request.POST.get('hall'))
+
+            if user.name_verified:
+                conn = sqlite3.connect('account/bt_all.sqlite3')
+                cur = conn.cursor()
+                cur.execute('SELECT name FROM BTECH_all WHERE reg= ? ', (user.registration_no.upper(),))
+                name = cur.fetchone()[0]
+                obj.name=name
+
             obj.save()
             profile=obj
             context['success_message']='Account Updated Successfully!'
@@ -181,7 +203,9 @@ def create_profile_view(request,slug):
     account=get_object_or_404(User,registration_no=slug)
 
     if not account:return HttpResponse('Sorry, But no such account was found.....\nAnd please stop messing around with the system....')
-    context['HALLS']=HALLS
+    #context['HALLS']=HALLS
+
+
     if request.POST:
         form=UserProfileForm(request.POST)
         if form.is_valid():
@@ -189,6 +213,13 @@ def create_profile_view(request,slug):
             profile.hall=int(request.POST.get('hall'))
             owner=User.objects.filter(registration_no=user.registration_no).first()
             profile.user=owner
+            if user.name_verified:
+                conn = sqlite3.connect('account/bt_all.sqlite3')
+                cur = conn.cursor()
+                cur.execute('SELECT name FROM BTECH_all WHERE reg= ? ', (user.registration_no.upper(),))
+                name = cur.fetchone()[0]
+                profile.name=name
+
             profile.save()
             return redirect('personal:home')
         else:
