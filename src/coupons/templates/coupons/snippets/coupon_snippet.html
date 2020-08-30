@@ -10,7 +10,7 @@
 
 
 </style>
-
+{%load tz%}
 {%if coupon_post%}
 <div class="container">
     <div class="row">
@@ -33,9 +33,9 @@
 
             </div>
             <div class="card-footer text-muted">
-                Updated on {{coupon_post.date_updated}} by
+                Updated on {%timezone "Asia/Calcutta"%}{{coupon_post.date_updated}}{%endtimezone%} by
                 <a href="{%url 'account:profileData_view' slug=coupon_post.author.registration_no %}" style=
-                    {%if coupon_post.author.name_verified%}
+                    {%if coupon_post.author.name_verified %}
                         "color: #7cfc00"
                     {%else%}
                         "color: #ff0000"
