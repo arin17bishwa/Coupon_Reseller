@@ -45,7 +45,6 @@ def registration_view(request):
             cur.execute('SELECT name FROM BTECH_all WHERE reg= ? ', (user.registration_no.upper(),))
             name = cur.fetchone()
             if name is not None:
-                name = name[0]
                 name_verified = True
             else:
                 name_verified = False

@@ -4,13 +4,18 @@ from django.core.paginator import PageNotAnInteger,EmptyPage,Paginator
 from coupons.models import Coupon
 from django.shortcuts import render, redirect
 from django.conf import settings
+from django.utils import timezone
+from datetime import timedelta
+
 
 POSTS_PER_PAGE=settings.POSTS_PER_PAGE
 
 def home_view(request):
     context={}
     if not request.user.is_authenticated:return redirect('account:must_authenticate')
-    qs = Coupon.objects.filter(sold=False).exclude(author=request.user)
+    qs=Coupon.objects.all()
+    #qs=Coupon.objects.filter(date_updated__gte=(timezone.now()-timedelta(hours=36)))
+    qs = qs.filter(sold=False).exclude(author=request.user)
     if request.GET:
         filter_data=request.GET
         f_hall=filter_data.get('hall','None')
