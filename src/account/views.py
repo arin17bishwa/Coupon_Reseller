@@ -66,9 +66,9 @@ def registration_view(request):
             email.send()
             print(message)
             return HttpResponse('Please confirm your email address to complete the registration')
-
         else:
             context['registration_form']=form
+
     else:#it means it is a GET request
         form=RegistrationForm()
         context['registration_form'] = form
