@@ -21,26 +21,27 @@ from .forms import (
 from .models import User, UserProfile
 from .utils import account_activation_token
 
-
-import sqlite3,os
+import sqlite3, os
 
 # Create your views here.
 
-HALLS=settings.HALLS
+HALLS = settings.HALLS
+
+
 User=get_user_model()
 
 
 # Create your views here.
 
 def registration_view(request):
-    context={}
+    context = {}
     if request.POST:
-        form=RegistrationForm(request.POST)
+        form = RegistrationForm(request.POST)
         if form.is_valid():
             user = form.save(commit=False)
             user.is_active = False
-            user.registration_no=str(user.registration_no).upper()
-            conn = sqlite3.connect(os.path.join(settings.BASE_DIR,'account/bt_all.sqlite3'))
+            user.registration_no = str(user.registration_no).upper()
+            conn = sqlite3.connect(os.path.join(settings.BASE_DIR, 'account/bt_all.sqlite3'))
             cur = conn.cursor()
             cur.execute('SELECT name FROM BTECH_all WHERE reg= ? ', (user.registration_no.upper(),))
             name = cur.fetchone()
@@ -48,7 +49,7 @@ def registration_view(request):
                 name_verified = True
             else:
                 name_verified = False
-            user.name_verified=name_verified
+            user.name_verified = name_verified
             user.save()
 
             current_site = get_current_site(request)
@@ -63,16 +64,19 @@ def registration_view(request):
             email = EmailMessage(
                 mail_subject, message, to=[to_email]
             )
-            email.send()
-            print(message)
+            if not settings.DEBUG:
+                email.send()
+            else:
+                print(message)
+
             return HttpResponse('Please confirm your email address to complete the registration')
         else:
-            context['registration_form']=form
+            context['registration_form'] = form
 
-    else:#it means it is a GET request
-        form=RegistrationForm()
+    else:  # it means it is a GET request
+        form = RegistrationForm()
         context['registration_form'] = form
-    return render(request,'account/register.html',context)
+    return render(request, 'account/register.html', context)
 
 
 def activate(request, uidb64, token):
@@ -85,146 +89,149 @@ def activate(request, uidb64, token):
         user.is_active = True
         user.save()
         login(request, user)
-        return redirect('account:create_profile',slug=str(user.registration_no).lower())
+        return redirect('account:create_profile', slug=str(user.registration_no).lower())
     else:
         return HttpResponse('Activation link is invalid!')
+
 
 def logout_view(request):
     logout(request)
     return redirect('personal:home')
 
-def login_view(request):
-    context={}
 
-    user=request.user
+def login_view(request):
+    context = {}
+
+    user = request.user
     if user.is_authenticated:
         return redirect('personal:home')
 
     if request.POST:
-        form=AccountAuthenticationForm(request.POST)
+        form = AccountAuthenticationForm(request.POST)
         if form.is_valid():
-            username=request.POST['username']
-            password=request.POST['password']
-            user=authenticate(username=username,password=password)
+            username = request.POST['username']
+            password = request.POST['password']
+            user = authenticate(username=username, password=password)
 
             if user:
-                if not user.is_active:return HttpResponse('YOUR ACCOUNT IS NOT ACTIVE YET')
-                login(request,user)
+                if not user.is_active: return HttpResponse('YOUR ACCOUNT IS NOT ACTIVE YET')
+                login(request, user)
                 return redirect('personal:home')
     else:
-        form=AccountAuthenticationForm()
+        form = AccountAuthenticationForm()
 
-    context['login_form']=form
-    return render(request,'account/login.html',context)
+    context['login_form'] = form
+    return render(request, 'account/login.html', context)
 
 
 def account_view(request):
     if not request.user.is_authenticated:
         return redirect('account:must_authenticate')
 
-    context={}
+    context = {}
 
     if request.POST:
-        form=AccountUpdateForm(request.POST,instance=request.user)
+        form = AccountUpdateForm(request.POST, instance=request.user)
         if form.is_valid():
-            form.initial={
-                'username':request.POST['username']
+            form.initial = {
+                'username': request.POST['username']
             }
             form.save()
-            context['success_message']='Account Updated Successfully!'
+            context['success_message'] = 'Account Updated Successfully!'
     else:
-        form=AccountUpdateForm(
+        form = AccountUpdateForm(
             initial={
-                'username':request.user.username,
+                'username': request.user.username,
             }
         )
-    context['account_form']=form
-    qs=Coupon.objects.filter(author=request.user)
-    context['coupon_posts']=sorted(list(qs),key=attrgetter('date_updated'),reverse=True)
-    return render(request,'account/account.html',context)
+    context['account_form'] = form
+    qs = Coupon.objects.filter(author=request.user)
+    context['coupon_posts'] = sorted(list(qs), key=attrgetter('date_updated'), reverse=True)
+    return render(request, 'account/account.html', context)
+
 
 def must_authenticate_view(request):
-    return render(request,'account/must_authenticate.html')
+    return render(request, 'account/must_authenticate.html')
 
-def profile_view(request,slug):
-    context={}
-    context['has_profile']=False
-    user=request.user
+
+def profile_view(request, slug):
+    context = {'has_profile': False}
+    user = request.user
     if not request.user.is_authenticated:
         return redirect('account:must_authenticate')
 
-    if (not hasattr(user,'userprofile')) or str(user.userprofile.name).strip()=='':
-        return redirect('account:create_profile',slug=str(user.registration_no.lower()))
+    if (not hasattr(user, 'userprofile')) or str(user.userprofile.name).strip() == '':
+        return redirect('account:create_profile', slug=str(user.registration_no.lower()))
 
-    profile=get_object_or_404(UserProfile,slug=slug.lower())
+    profile = get_object_or_404(UserProfile, slug=slug.lower())
     context['profile'] = profile
-    if profile.user!=user:
-        return render(request,'account/view_profile.html',context)
+    if profile.user != user:
+        return render(request, 'account/view_profile.html', context)
 
     if request.POST:
-        form=ProfileUpdateForm(request.POST or None,instance=request.user.userprofile)
+        form = ProfileUpdateForm(request.POST or None, instance=request.user.userprofile)
         if form.is_valid():
-            obj=form.save(commit=False)
-            obj.hall=int(request.POST.get('hall'))
+            obj = form.save(commit=False)
+            obj.hall = int(request.POST.get('hall'))
 
             if user.name_verified:
-                conn = sqlite3.connect(os.path.join(settings.BASE_DIR,'account/bt_all.sqlite3'))
+                conn = sqlite3.connect(os.path.join(settings.BASE_DIR, 'account/bt_all.sqlite3'))
                 cur = conn.cursor()
                 cur.execute('SELECT name FROM BTECH_all WHERE reg= ? ', (user.registration_no.upper(),))
                 name = cur.fetchone()[0]
-                obj.name=name
+                obj.name = name
 
             obj.save()
-            profile=obj
-            context['success_message']='Account Updated Successfully!'
+            profile = obj
+            context['success_message'] = 'Account Updated Successfully!'
 
-    form=ProfileUpdateForm(
+    form = ProfileUpdateForm(
         initial={
-            'name':profile.name,
-            'hall':profile.hall,
-            #'veg':profile.veg
+            'name': profile.name,
+            'hall': profile.hall,
+            # 'veg':profile.veg
         }
     )
 
-    context['profile_form']=form
+    context['profile_form'] = form
 
-    return render(request,'account/edit_profile.html',context)
+    return render(request, 'account/edit_profile.html', context)
 
 
-def create_profile_view(request,slug):
-    context={}
-    user=request.user
+def create_profile_view(request, slug):
+    context = {}
+    user = request.user
     if (not request.user.is_authenticated):
         return redirect('account:must_authenticate')
-    if user.registration_no.lower()!=slug:
+    if user.registration_no.lower() != slug:
         return redirect('account:must_authenticate')
 
-    account=get_object_or_404(User,registration_no=slug.upper())#######
+    account = get_object_or_404(User, registration_no=slug.upper())  #######
 
-    if not account:return HttpResponse('Sorry, But no such account was found.....\nAnd please stop messing around with the system....')
-    #context['HALLS']=HALLS
-
+    if not account: return HttpResponse(
+        'Sorry, But no such account was found.....\nAnd please stop messing around with the system....')
+    # context['HALLS']=HALLS
 
     if request.POST:
-        form=UserProfileForm(request.POST)
+        form = UserProfileForm(request.POST)
         if form.is_valid():
-            profile=form.save(commit=False)
-            profile.hall=int(request.POST.get('hall'))
-            owner=User.objects.filter(registration_no=user.registration_no.upper()).first()
-            profile.user=owner
+            profile = form.save(commit=False)
+            profile.hall = int(request.POST.get('hall'))
+            owner = User.objects.filter(registration_no=user.registration_no.upper()).first()
+            profile.user = owner
             if user.name_verified:
-                conn = sqlite3.connect(os.path.join(settings.BASE_DIR,'account/bt_all.sqlite3'))
+                conn = sqlite3.connect(os.path.join(settings.BASE_DIR, 'account/bt_all.sqlite3'))
                 cur = conn.cursor()
                 cur.execute('SELECT name FROM BTECH_all WHERE reg= ? ', (user.registration_no.upper(),))
                 name = cur.fetchone()[0]
-                profile.name=name
+                profile.name = name
 
             profile.save()
             return redirect('personal:home')
         else:
-            context['form']=form
+            context['form'] = form
     else:
-        form=UserProfileForm()
-        context['form']=form
-    
-    return render(request,'account/create_profile.html',context=context)
+        form = UserProfileForm()
+        context['form'] = form
+
+    return render(request, 'account/create_profile.html', context=context)
