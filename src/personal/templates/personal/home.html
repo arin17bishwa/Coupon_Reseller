@@ -75,7 +75,7 @@
                             {%for meal in MEALS%}
                                 <option value="{{meal.0}}" {%if 'meal' in request.GET %}
                                                             {%if meal.0 == request.GET.meal or request.GET.meal == 'None' %} selected{%endif%}
-                                                          {%else%}  {%if not meal.0 %}selected  {%endif%}{%endif%}>
+                                                          {%else%}  {%if not meal.0 %}selected{%endif%}{%endif%}>
                                     {%if not meal.0 %}
                                         All meals
                                     {%else%}

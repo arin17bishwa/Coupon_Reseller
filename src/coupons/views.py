@@ -10,6 +10,8 @@ from .models import Coupon
 User=get_user_model()
 HALLS=settings.HALLS
 MEALS=settings.MEALS
+
+
 def create_coupon_view(request):
     context={}
 
@@ -32,22 +34,24 @@ def create_coupon_view(request):
 
 
 def update_coupon_view(request,slug):
-    context={}
+    context=dict()
     context['HALLS']=HALLS
     context['MEALS']=MEALS
     user=request.user
-    if not user.is_authenticated:return redirect('account:must_authenticate')
-    post=get_object_or_404(Coupon,slug=slug)
-    if post.author!=user: return redirect('account:must_authenticate')
+    if not user.is_authenticated:
+        return redirect('account:must_authenticate')
+    post=get_object_or_404(Coupon, slug=slug)
+    if post.author!=user:
+        return redirect('account:must_authenticate')
     if request.POST:
-        form=UpdateCouponForm(request.POST or None,instance=post)
+        form = UpdateCouponForm(request.POST or None,instance=post)
         if form.is_valid():
-            obj=form.save(commit=False)
-            obj.sold=int(request.POST['sold'])
+            obj = form.save(commit=False)
+            obj.sold = int(request.POST['sold'])
             obj.save()
-            post=obj
+            post = obj
 
-            context['success_message']='Updated'
+            context['success_message'] = 'Updated'
 
     form = UpdateCouponForm(
         initial={
@@ -60,6 +64,7 @@ def update_coupon_view(request,slug):
 
     context['form'] = form
     return render(request,'coupons/update_post.html',context=context)
+
 
 @api_view(['POST'])
 def coupon_action_view(request):
