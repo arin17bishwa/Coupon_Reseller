@@ -1,1 +1,1 @@
-web: sh -c 'cd Project/src && gunicorn mysite.wsgi:application'
+web: sh -c 'cd src && gunicorn mysite.wsgi:application'
