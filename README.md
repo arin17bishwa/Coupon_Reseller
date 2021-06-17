@@ -11,4 +11,4 @@ A SQLite file containing the Registration No. and corresponding names of the stu
 
 Every user has the ability to edit the posted ads after posting it.
 
-A demo has been put up at http://arin17.pythonanywhere.com/
+A demo has been put up at [Heroku](https://coupon-reseller.herokuapp.com/).
