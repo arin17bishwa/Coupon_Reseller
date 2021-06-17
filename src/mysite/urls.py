@@ -19,10 +19,10 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('',include('personal.urls'),name='personal'),
-    path('account/',include('account.urls'),name='account'),
-    path('coupon/',include('coupons.urls'),name='coupon'),
-    path('experiments/',include('experiments.urls'),name='experiments'),
+    path('',include('personal.urls',namespace='personal')),
+    path('account/',include('account.urls',namespace='account')),
+    path('coupon/',include('coupons.urls',namespace='coupon')),
+    path('experiments/',include('experiments.urls',namespace='experiments')),
 
 
     path('password_change/done/',auth_views.PasswordChangeDoneView.as_view(template_name='registration/password_change_done.html'),name='password_change_done'),
