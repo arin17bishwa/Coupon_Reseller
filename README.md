@@ -35,12 +35,11 @@ cd Coupon_Reseller
 python -m venv .venv
 source .venv/bin/activate
 
-# Change to project directory
-cd src
-
 # Install the requirements
 pip install -r requirements.txt
 
+# Change to project directory
+cd src
 
 # Run the migrations
 python manage.py makemigrations
