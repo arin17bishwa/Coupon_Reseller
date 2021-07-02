@@ -28,7 +28,7 @@ def create_coupon_view(request):
         author=User.objects.filter(email=user.email).first()
         obj.author=author
         obj.save()
-        form=CreateCouponForm()
+        return redirect('account:profile')
     context['form']=form
     return render(request,'coupons/create_post.html',context)
 
