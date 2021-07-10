@@ -31,7 +31,7 @@ Every user has the ability to edit the posted ads after posting it.
 git clone https://github.com/arin17bishwa/Coupon_Reseller.git
 cd Coupon_Reseller
 
-# Set up a virtual environment
+# Set up a virtual environment (.venv is the virtual environment name)
 python -m venv .venv
 source .venv/bin/activate
 
