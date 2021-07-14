@@ -14,7 +14,7 @@ To make sure every user is actually a student of the college, registering with i
 
 Once registered, they will be asked to make a profile,without which they can neither post anything, nor view others' profiles.
 
-A SQLite file containing the Registration Number and corresponding names of the students(currently, only those of UG program) has been prepared in the account directory. If the user registration number exists in the database then their "Name" field in their profile will be autofilled and be immutable by the user. They will  also be marked Verified. The links to their profiles will be shown in green, while the other accounts will be coloured red.
+A SQLite file containing the Registration Number and corresponding names of the students(currently, only those UG batch 2020, 2021, 2022, 2023) has been prepared in the account directory. If the user registration number exists in the database then their "Name" field in their profile will be autofilled and be immutable by the user. They will  also be marked Verified. The links to their profiles will be shown in green, while the other accounts will be coloured red.
 
 Every user has the ability to edit the posted ads after posting it.
 
