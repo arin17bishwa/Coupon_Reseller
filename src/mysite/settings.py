@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 import os
 from pathlib import Path
 import django_heroku
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
@@ -22,10 +23,10 @@ BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY =os.environ.get("DJ_SECRET_KEY_COUPON_RESELLER") 
+SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DJ_DEBUG_VALUE') == 'True'
+DEBUG = config('DEBUG')
 
 ALLOWED_HOSTS = ['arin17.pythonanywhere.com','127.0.0.1','coupon-reseller.herokuapp.com']
 
@@ -167,8 +168,8 @@ MEDIA_ROOT=os.path.join(BASE_DIR,'media_cdn')
 
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = os.environ.get('TRY_GMAIL_ID')#'youremail@gmail.com'
-EMAIL_HOST_PASSWORD = os.environ.get('TRY_GMAIL_PASSWORD')
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config('PASSWORD')
 EMAIL_PORT = 587
 
 django_heroku.settings(locals())
