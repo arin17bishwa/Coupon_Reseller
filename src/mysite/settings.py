@@ -13,23 +13,23 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 import os
 from pathlib import Path
 import django_heroku
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY =os.environ.get("DJ_SECRET_KEY_COUPON_RESELLER") 
+SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DJ_DEBUG_VALUE') == 'True'
+DEBUG = config('DEBUG')
 
-ALLOWED_HOSTS = ['arin17.pythonanywhere.com','127.0.0.1','coupon-reseller.herokuapp.com']
+ALLOWED_HOSTS = ['*', 'arin17.pythonanywhere.com', '127.0.0.1', 'coupon-reseller.herokuapp.com']
 
-AUTH_USER_MODEL='account.User'
+AUTH_USER_MODEL = 'account.User'
 
 # Application definition
 
@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    #my apps
+    # my apps
     'account',
     'coupons',
     'personal',
@@ -63,14 +63,14 @@ ROOT_URLCONF = 'mysite.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR,'templates')],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
-                #my context_processors
+                # my context_processors
                 'personal.processors.hallnmeal',
 
-                #pre-installed
+                # pre-installed
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
@@ -82,7 +82,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'mysite.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
@@ -92,7 +91,6 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
@@ -112,14 +110,14 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-MEALS=(
-    ("B",'Breakfast'),
-    ("L",'Lunch'),
-    ('D','Dinner'),
-    (None,'Meal')
+MEALS = (
+    ("B", 'Breakfast'),
+    ("L", 'Lunch'),
+    ('D', 'Dinner'),
+    (None, 'Meal')
 )
-MEAL_NAMES={'B':'Breakfast','L':'Lunch','D':'Dinner'}
-HALLS=(
+MEAL_NAMES = {'B': 'Breakfast', 'L': 'Lunch', 'D': 'Dinner'}
+HALLS = (
     (1, '1'),
     (2, '2'),
     (3, '3'),
@@ -133,10 +131,9 @@ HALLS=(
     (11, '11'),
     (12, '12'),
     (13, '13'),
-    (None,'Hall Number')
+    (None, 'Hall Number')
 )
-POSTS_PER_PAGE=10
-
+POSTS_PER_PAGE = 10
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
@@ -151,24 +148,22 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
-STATICFILES_DIRS=[
-    os.path.join(BASE_DIR,'static'),
-    os.path.join(BASE_DIR,'media')
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+    os.path.join(BASE_DIR, 'media')
 ]
 STATIC_URL = '/static/'
-MEDIA_URL='/media/'
-STATIC_ROOT=os.path.join(BASE_DIR,'static_cdn')
-MEDIA_ROOT=os.path.join(BASE_DIR,'media_cdn')
-
+MEDIA_URL = '/media/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static_cdn')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media_cdn')
 
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = os.environ.get('TRY_GMAIL_ID')#'youremail@gmail.com'
-EMAIL_HOST_PASSWORD = os.environ.get('TRY_GMAIL_PASSWORD')
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config('PASSWORD')
 EMAIL_PORT = 587
 
 django_heroku.settings(locals())
